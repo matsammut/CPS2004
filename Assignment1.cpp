@@ -24,7 +24,7 @@ class DAG{
     int size_;
     Node<T> *head_ = NULL;
     Node<T> *tail_ = NULL;
-    std::vector<T> *adj_list;
+    std::vector<T> *adj_list = NULL;
 
 
     public:
@@ -41,16 +41,25 @@ class DAG{
             this->tail_->next = new Node<T>(value);
             this->tail_ = this->tail_->next;
         }
-        // adj_list[value].push_back(0);
-        adj_list.push_back(value);
+        adj_list[value].push_back(0);
+        // adj_list.push_back(value);
         this->size_ += 1;
     }
     void addEdge(T valueTo,T valueFrom){
-
+        adj_list[valueFrom].push_back(valueTo);
     }
     void printEdges(){
-        for (const T& i : adj_list) {
-            cout << i << "  ";
+        Node<T> *tmp;
+        tmp =  head_;
+        while (tmp!=NULL){
+            // cout << adj_list[tmp->value] << "  ";
+            for (size_t i = 0; i < adj_list[tmp->value].size(); ++i) {
+                cout << adj_list[tmp->value][i] << "; ";
+            }
+           // for (const T& i : adj_list[tmp->value]) {
+             //   cout << i << "  ";
+            //}
+            tmp = tmp->next;
         }
     }
 };
