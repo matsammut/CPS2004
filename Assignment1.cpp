@@ -19,6 +19,9 @@ class Node{
     }
 
 };
+struct graphEdge{
+    int to,from;
+};
 
 template <typename T>
 class DAG{
@@ -46,6 +49,8 @@ class DAG{
             this->tail_ = this->tail_->next;
             adj_list.push_back(this->tail_ ->row);
         }
+        adj_list[value].push_back(0);
+        // adj_list.push_back(value);
         this->size_ += 1;
     }
     bool checkNodeExist(T value){
@@ -139,6 +144,7 @@ class DAG{
 };
 
 int main(){
+    int V = 5 ;
     DAG<int> glist;
     glist.addNode(5);
     // glist.addNode(6);
