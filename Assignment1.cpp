@@ -62,6 +62,7 @@ class DAG{
             }
         }
     }
+    
     decltype(auto) findNode(T value){
         Node<T> *tmp = head_;
         for(;;){
@@ -93,10 +94,10 @@ class DAG{
         
     }
     void printEdges(){
-        for (int i = 0; i < adj_list.size(); i++)
+        for (std::size_t i = 0; i < adj_list.size(); i++)
         {
             cout << "Node " << i << "-->";
-            for (int j = 0; j < adj_list[i].size(); j++)
+            for (std::size_t j = 0; j < adj_list[i].size(); j++)
             {
                 cout << adj_list[i][j] << " , ";
             }
@@ -104,17 +105,50 @@ class DAG{
         }
         
     }
+    bool checkCycles(vector<bool> visited,T checkId){  
+        Node<T> *tmp = findNode(checkId);
+        if (tmp !=NULL){
+            if (visited[tmp->id] == true){
+                return true;
+            }
+            visited[tmp->id] = true;
+            for(std::size_t i = 0; i <adj_list[tmp->id].size();i++){
+                if (checkCycles(visited, adj_list[tmp->id][i]) == true){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    bool checkCycles(){
+        vector<bool> visited(size_,false);
+
+         for (std::size_t i = 0; i < adj_list.size(); i++)
+        {
+            visited[i] = true;
+            for (std::size_t j = 0; j < adj_list[i].size(); j++)
+            {
+                if (checkCycles(visited,adj_list[i][j]) == true){
+                    return true;
+                }
+            }
+            visited[i]= false;
+        }
+        return false;
+    }
 };
 
 int main(){
     DAG<int> glist;
     glist.addNode(5);
-    glist.addNode(6);
+    // glist.addNode(6);
     glist.addNode(2);
-    glist.addEdge(2,5);
-    glist.addEdge(6,5);
-    glist.addEdge(6,2);
+    // glist.addEdge(2,5);
+    // glist.addEdge(6,5);
+    glist.addEdge(5,2);
     // glist.addEdge(8,13);
     // glist.addEdge(9,5);
     glist.printEdges();
+    bool check = glist.checkCycles();
+    cout << check << "\n";
 }
