@@ -19,9 +19,6 @@ class Node{
     }
 
 };
-struct graphEdge{
-    int to,from;
-};
 
 template <typename T>
 class DAG{
@@ -30,6 +27,7 @@ class DAG{
     Node<T> *head_ = NULL;
     Node<T> *tail_ = NULL;
     Node<T> *error_ = NULL;
+    Node<T> *search = NULL;
     std::vector<vector<T>> adj_list;
 
 
@@ -49,8 +47,6 @@ class DAG{
             this->tail_ = this->tail_->next;
             adj_list.push_back(this->tail_ ->row);
         }
-        adj_list[value].push_back(0);
-        // adj_list.push_back(value);
         this->size_ += 1;
     }
     bool checkNodeExist(T value){
@@ -98,6 +94,20 @@ class DAG{
         }
         
     }
+    void printNodes(){
+        Node<T> *tmp = head_;
+        cout << "Printing nodes : \n";
+        for(;;){
+            cout << tmp->value << " , ";
+            if (tmp->next == NULL){
+                cout << "\n";
+                break;
+            }
+            else{
+                tmp = tmp->next;
+            }
+        }
+    }
     void printEdges(){
         for (std::size_t i = 0; i < adj_list.size(); i++)
         {
@@ -109,6 +119,59 @@ class DAG{
             printf("\n");
         }
         
+    }
+    void removeAssociatedEdges(T value){
+        Node<T> *tmp = findNode(value);
+        adj_list.erase(adj_list.begin() + tmp->id);
+
+        for (std::size_t i = 0; i < adj_list.size(); i++)
+        {
+            for (std::size_t j = 0; j < adj_list[i].size(); j++)
+            {
+                if (adj_list[i][j] ==  value){
+                    adj_list[i].erase(std::remove(adj_list[i].begin(),adj_list[i].end(),value));
+                    break;
+                }
+
+            }
+        }
+    }
+    void removeNode(T value){
+        removeAssociatedEdges(value);
+        Node<T> *tmp = findNode(value);
+        Node<T> *search = head_;
+        if(search->id == tmp->id){
+            this->head_=this->head_->next;
+            this->size_ -= 1;
+            search = head_;
+            for(;;){
+                search->id = search->id - 1;
+                if (search->next == NULL){
+                    break;
+                }
+                else{
+                    search = search->next;
+                }
+            }
+        }
+        else if(search->id != tmp->id){
+            while(search->next->id != tmp->id){
+                search = search->next;
+            }
+            search->next = tmp->next;
+            search = tmp;
+            for(;;){
+                search->id = search->id - 1;
+                if (search->next == NULL){
+                    break;
+                }
+                else{
+                    search = search->next;
+                }
+            }
+        }
+        
+
     }
     bool checkCycles(vector<bool> visited,T checkId){  
         Node<T> *tmp = findNode(checkId);
@@ -124,6 +187,8 @@ class DAG{
             }
             return false;
         }
+        // added to have a return statement in case of NULL
+        return false;
     }
     bool checkCycles(){
         vector<bool> visited(size_,false);
@@ -144,18 +209,20 @@ class DAG{
 };
 
 int main(){
-    int V = 5 ;
     DAG<int> glist;
     glist.addNode(5);
-    // glist.addNode(6);
+    glist.addNode(6);
     glist.addNode(2);
-    // glist.addEdge(2,5);
-    // glist.addEdge(6,5);
+    glist.addEdge(2,5);
+    glist.addEdge(6,5);
     glist.addEdge(5,2);
-    // glist.addEdge(8,13);
-    // glist.addEdge(9,5);
     glist.printEdges();
+    //if check cycles = 0 there are no cycles
     bool check = glist.checkCycles();
     cout << check << "\n";
+    glist.removeNode(6);
+    glist.printNodes();
+    glist.printEdges();
+    
     
 }
