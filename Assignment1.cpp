@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstring>
 #include <algorithm>
+#include <list>
 using namespace std;
 
 template <typename T>
@@ -29,6 +30,7 @@ class DAG{
     Node<T> *error_ = NULL;
     Node<T> *search = NULL;
     std::vector<vector<T>> adj_list;
+
 
 
     public:
@@ -89,6 +91,13 @@ class DAG{
         Node<T> *tmp = findNode(valueFrom);
         if (tmp != NULL){
             tmp->row.push_back(valueTo);
+            adj_list.erase(adj_list.begin() + tmp->id);
+            adj_list.insert(adj_list.begin() + tmp->id,tmp->row);
+        }
+        //if check cycles = 0 there are no cycles
+        if (checkCycles() == 1){
+            cout << "Error addition of edge " << valueFrom << " to " << valueTo << " would result in a cycle! \nAborting\n";
+            tmp->row.pop_back();
             adj_list.erase(adj_list.begin() + tmp->id);
             adj_list.insert(adj_list.begin() + tmp->id,tmp->row);
         }
@@ -206,21 +215,29 @@ class DAG{
         }
         return false;
     }
+    void passListEdges(list<T> edges, T from){
+        for (T x : edges) {
+            addEdge(x,from);
+	    }
+    }
 };
 
 int main(){
-    DAG<int> glist;
-    glist.addNode(5);
-    glist.addNode(6);
-    glist.addNode(2);
-    glist.addEdge(2,5);
-    glist.addEdge(6,5);
-    glist.addEdge(5,2);
+    DAG<string> glist;
+    list<string> my_list = { "friends", "are", "very", "cool" };
+    glist.addNode("friends");
+    glist.addNode("are");
+    glist.addNode("very");
+    glist.addNode("cool");
+    glist.addNode("hello");
+    glist.addNode("goodbye");
+    glist.addNode("bet");
+    // glist.addEdge(2,5);
+    glist.passListEdges(my_list,"hello");
+    glist.addEdge("bet","goodbye");
+    glist.addEdge("hello","goodbye");
     glist.printEdges();
-    //if check cycles = 0 there are no cycles
-    bool check = glist.checkCycles();
-    cout << check << "\n";
-    glist.removeNode(6);
+    glist.removeNode("bet");
     glist.printNodes();
     glist.printEdges();
     
