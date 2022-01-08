@@ -9,41 +9,34 @@ using namespace std;
 
 template<int T>
 class myuint{
-    private:   
+    public:
     int bits = T;
     std::vector<bool> binary;
-    public:
-    myuint(int n) : bits(n) {
-        myuint(bits,n);
-    }
-    myuint(int bits,int num){
+    myuint(int num){
+        this->bits = bits;
         while(bits>=0){
             int power = pow(2,bits);
             if(num>=power){
                 num -= power;
-                binary.push_back(true);
+                this->binary.push_back(true);
             }
             else{
-                binary.push_back(false);
+                this->binary.push_back(false);
             }
             bits--;
         }
-        for (std::size_t j = 0; j < binary.size(); j++)
-            {
-                cout << binary[j] << " , ";
-            }
     }
     void printBinary(){
-        for (std::size_t j = 0; j < binary.size(); j++)
+        for (std::size_t j = 0; j < this->binary.size(); j++)
             {
-                cout << binary[j] << " , ";
+                cout << this->binary[j] << " , ";
             }
     }
 };
 
 
 int main(){
-    myuint<1024> i(5);
+    myuint<64> i(27);
     i.printBinary();
-    printf("hello");
+
 }
