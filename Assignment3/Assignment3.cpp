@@ -43,17 +43,18 @@ class myuint{
     }
     myuint operator + (const myuint& obj){
         bool objsmaller = false;
+        myuint tmp;
+        int smaller;
         if (bits > obj.bits){
-            int larger = bits;
-            int smaller = obj.bits;
+            
+            smaller = obj.bits;
             objsmaller = true;
         }
         else{
-            int larger = obj.bits; 
-            int smaller = bits;         
+            smaller = bits;         
         }
 
-        myuint<larger> tmp(0);
+        
         bool carry = false;
         if(objsmaller == true){
             for (std::size_t j = 0; j < binary.size(); j++)
@@ -69,7 +70,7 @@ class myuint{
                     else if((binary[j] == 1 && obj.binary[j] == 0) || (binary[j] == 0 && obj.binary[j] == 1)){
                         tmp.binary[j] = true;
                     }
-                    else if((binary[j] == 1 && obj.binary[j] == 1 && carry == 1){
+                    else if((binary[j] == 1 && obj.binary[j] == 1 && carry == 1)){
                         tmp.binary[j] = true;
                         carry = 1;
                     }
@@ -77,9 +78,11 @@ class myuint{
                         tmp.binary[j] = false;
                         carry = 1;
                     }
+                
                 }
             }
         }
+    
         
 
 
