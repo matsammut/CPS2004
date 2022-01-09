@@ -13,12 +13,20 @@ class User{
     public void setLogin(String login){
         this.login = login;
     }
+
+    public void printUser(){
+        System.out.println("Username: "+username+"\nPassword: "+login+"\n");
+    }
 }
 class Trader extends User{
-
+    public Trader(String username, String login){
+        super(username, login);
+    }
 }
 class Administrator extends User{
-
+    public Administrator(String username, String login){
+        super(username, login);
+    }
 }
 
 public class Assignment2{
