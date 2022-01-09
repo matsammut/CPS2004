@@ -1,4 +1,14 @@
 import java.util.Vector;
+class ApprovalSheet{
+    private static Vector<String> toApprove = new Vector<>();
+    private static Vector<String> Approved = new Vector<>();
+    public void approvalRequest(boolean approval, String login){
+        toApprove.add(login);
+    }
+    public boolean checkApproved(String login){
+        return Approved.contains(login);
+    }
+}
 class User{
     String username;
     String login;
@@ -23,7 +33,7 @@ class Trader extends User{
     boolean approved = false;
     public Trader(String username, String login){
         super(username, login);
-        approvalRequest(approved,username);
+        approved = checkApproved(login);
     }
 }
 class Administrator extends User{
@@ -33,6 +43,7 @@ class Administrator extends User{
     public boolean approvalRequest(boolean approval, String login){
         return true;
     }
+    public 
 }
 
 public class Assignment2{
