@@ -1,4 +1,4 @@
-
+import java.util.Vector;
 class User{
     protected String username;
     protected String login;
@@ -40,25 +40,24 @@ class Administrator extends User{
         }
         
     }
+    void Approve(Trader requestedBy){
+        if (UserManager.Traders.contains(requestedBy)==true){
+            UserManager.Traders.remove(requestedBy);
+            UserManager.TradersApproved.add(requestedBy);
+        }
+    }
 }
 
-// class UserManager{
-//     private static Vector<Trader> Traders = new Vector<>();
-//     private static Vector<Administrator> Admins = new Vector<>();
-//     public Trader createTrader(String username,String login){
-//         Trader x = new Trader(username,login);
-//         Traders.add(x);
-//         return x;
-//     }
-//     public Administrator createAdministrator(String username,String login){
-//         Administrator x = new Administrator(username,login);
-//         Admins.add(x);
-//         return x;
-//     }
-//     public void Approve(Trader x){
-//         if (Traders.contains(x) == true){
-
-//         }
-//         return;
-//     }
-// }
+class UserManager{
+    public static Vector<Trader> Traders = new Vector<>();
+    public static Vector<Trader> TradersApproved = new Vector<>();
+    public Trader createTrader(String username,String login){
+        Trader x = new Trader(username,login);
+        Traders.add(x);
+        return x;
+    }
+    public Administrator createAdministrator(String username,String login){
+        Administrator x = new Administrator(username,login);
+        return x;
+    }
+}
