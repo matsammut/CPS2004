@@ -1,12 +1,10 @@
 class Crypto {
-    int total;
+    int avgprice;
     int supply;
-    int decimals;
     char symbol;
-    public Crypto(int total,int supply,int decimals,char symbol){
-        this.total = total;
+    public Crypto(int avgprice,int supply,char symbol){
+        this.avgprice = avgprice;
         this.supply = supply;
-        this.decimals = decimals;
         this.symbol = symbol;
     }
 }
