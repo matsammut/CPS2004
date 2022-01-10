@@ -27,16 +27,17 @@ class Trader extends User{
         this.approved = request.approved;
         return request;
     } 
-    void Approved(){
-        
-    }  
+
 }
 class Administrator extends User{
     public Administrator(String username, String login){
         super(username, login);
     }
     void approvalRequest(Request_Approval request, Trader requestedBy){
-        request.approved = true;
+        if (request.approved == false){
+            requestedBy.approved = true;
+            request.approved = true;
+        }
         
     }
 }
