@@ -220,6 +220,9 @@ class DAG{
             addEdge(x,from);
 	    }
     }
+    decltype(auto) returnListEdges(){
+        return adj_list;
+    }
 };
 
 int main(){
@@ -232,7 +235,6 @@ int main(){
     glist.addNode("hello");
     glist.addNode("goodbye");
     glist.addNode("bet");
-    // glist.addEdge(2,5);
     glist.passListEdges(my_list,"hello");
     glist.addEdge("bet","goodbye");
     glist.addEdge("hello","goodbye");
