@@ -1,14 +1,22 @@
 import java.util.Vector;
 class UserManager{
-    private static Vector<Trader> toApprove = new Vector<>();
+    private static Vector<Trader> Traders = new Vector<>();
+    private static Vector<Administrator> Admins = new Vector<>();
     public Trader createTrader(String username,String login){
         Trader x = new Trader(username,login);
-        toApprove.add(x);
+        Traders.add(x);
         return x;
     }
     public Administrator createAdministrator(String username,String login){
         Administrator x = new Administrator(username,login);
+        Admins.add(x);
         return x;
+    }
+    public void Approve(Trader x){
+        if (Traders.contains(x) == true){
+
+        }
+        return;
     }
 }
 class User{
