@@ -19,6 +19,7 @@ class myuint{
             this->binary.push_back(false);
             bits--;
         }
+        this->bits = bits;
     }
     myuint(vector<bool> binary){
         this->bits = bits;
@@ -26,15 +27,16 @@ class myuint{
     }
     myuint(int num){
         this->bits = bits;
-        while(bits>0){
-            if(num>=pow(2,bits)){
-                num -= pow(2,bits);
+        int hold = bits;
+        while(hold>0){
+            if(num>=pow(2,hold-1)){
+                num -= pow(2,hold-1);
                 this->binary.push_back(true);
             }
             else{
                 this->binary.push_back(false);
             }
-            bits--;
+            hold--;
         }
     }
     string divideString(string num){
@@ -74,18 +76,16 @@ class myuint{
             }
             num = divideString(num);
         }
-
-        while(bits>int(stack.size())){
+        int hold = bits;
+        while(hold>int(stack.size())){
             this->binary.push_back(false);
-            bits--;
+            hold--;
         }
 
-        for (std::size_t j = (stack.size() - 1); j > 0; j--)
+        for (int j = (int(stack.size()) - 1); j >= 0; j--)
         {
             binary.push_back(stack.at(j));
         }
-        binary.push_back(stack.back());
-
     }
     void printBinary(){
         for (std::size_t j = 0; j < this->binary.size(); j++)
@@ -107,7 +107,40 @@ class myuint{
         }
         
     }
-    
+    template <int U>
+    void operator + (const myuint<U> &obj){
+        if (this->bits < obj.bits){ 
+            cout << "Error: RHS Big int is larger than LHS";
+        }
+ 
+        bool carry = false;
+        
+        for (int j = int(obj.binary.size())-1; j >=0 ; j--)
+        {
+            if(this->binary[j] == 0 && obj.binary[j] == 0 && carry ==1){
+               this->binary[j] = true;
+                carry = false;
+            }
+            else if(this->binary[j] == 0 && obj.binary[j] == 0){
+                this->binary[j] = false;
+            }         
+            else if((this->binary[j] == 1 && obj.binary[j] == 0) || (this->binary[j] == 0 && obj.binary[j] == 1)){
+                this->binary[j] = true;
+            }
+            else if((this->binary[j] == 1 && obj.binary[j] == 1 && carry == 1)){
+                this->binary[j] = true;
+                carry = 1;
+            }
+            else if(binary[j] == 1 && obj.binary[j]==1){
+                this->binary[j] = false;
+                carry = 1;
+            }
+            
+        }
+        return;
+
+        
+    }
 };
  
 
@@ -115,8 +148,13 @@ class myuint{
 int main(){
     //17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591
     // myuint<334> i("17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591");
-    myuint<7> a(5);
-    a >> 1;
+    myuint<4> a(5);
+    myuint<4> b(9);
+    a.printBinary();
+    cout << "\n";
+    b.printBinary();
+    cout << "\n";
+    a + b;
     a.printBinary();
 
     cout << "\n";
@@ -141,40 +179,3 @@ int main(){
 
 
 
-// myuint operator + (constexpr myuint &obj){
-//         bool objsmaller = false;
-//         if (this->bits > obj.bits){ 
-//             objsmaller = true;
-//         }
- 
-//         bool carry = false;
-//         if(objsmaller == true){
-//             myuint<obj.bits> tmp;
-//             for (std::size_t j = 0; j < this->binary.size(); j++)
-//             {
-//                 if (j<obj.binary.size()){
-//                     if(this->binary[j] == 0 && obj.binary[j] == 0){
-//                         tmp.binary[j] = false;
-//                     }
-//                     else if(this->binary[j] == 0 && obj.binary[j] == 0 && carry ==1){
-//                         tmp.binary[j] = true;
-//                         carry = false;
-//                     }
-//                     else if((this->binary[j] == 1 && obj.binary[j] == 0) || (this->binary[j] == 0 && obj.binary[j] == 1)){
-//                         tmp.binary[j] = true;
-//                     }
-//                     else if((this->binary[j] == 1 && obj.binary[j] == 1 && carry == 1)){
-//                         tmp.binary[j] = true;
-//                         carry = 1;
-//                     }
-//                     else if(binary[j] == 1 && obj.binary[j]==1){
-//                         tmp.binary[j] = false;
-//                         carry = 1;
-//                     }
-                
-//                 }
-//             }
-//             return tmp;
-//         }
-        
-//     }
