@@ -189,6 +189,23 @@ class myuint{
         }
         return *this;
     }
+    // template <class L>
+    // void template_convert_to(){
+    // }
+    
+    // template <>
+    int template_convert_to(){
+        int ans = 0;
+        int opposite = 0;
+        for (int j = int(this->binary.size())-1; j >=0 ; j--)
+        {
+            if(this->binary[j] == 1){
+                ans += pow(2,opposite);
+            }
+            opposite ++;
+        }
+        return ans;
+    }
 };
  
 
@@ -206,8 +223,9 @@ int main(){
     cout << "\n";
     c = a - b - b;
     c.printBinary();
-
+    int ans = c.template_convert_to();
     cout << "\n";
+    cout << ans <<"\n";
 }
 
 
