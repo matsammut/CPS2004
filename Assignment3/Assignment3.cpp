@@ -93,22 +93,23 @@ class myuint{
                 cout << this->binary[j] << " , ";
             }
     }
-    void operator << (const int &value){
+    myuint operator << (const int &value){
         for (int i = 0; i < value; i ++){
-            binary.erase(binary.begin());
-            binary.push_back(false);
+            this->binary.erase(this->binary.begin());
+            this->binary.push_back(false);
         }
-        
+        return *this;
     }
-    void operator >> (const int &value){
+    myuint operator >> (const int &value){
         for (int i = 0; i < value; i ++){
-            binary.erase(binary.end());
-            binary.insert(binary.begin(),false);
+            this->binary.erase(this->binary.end());
+            this->binary.insert(this->binary.begin(),false);
         }
+        return *this;
         
     }
     template <int U>
-    void operator + (const myuint<U> &obj){
+    myuint operator + (const myuint<U> &obj){
         if (this->bits < obj.bits){ 
             cout << "Error: RHS Big int is larger than LHS";
         }
@@ -137,9 +138,56 @@ class myuint{
             }
             
         }
-        return;
+        return *this;
 
         
+    }
+
+    template <int U>
+    myuint operator - (const myuint<U> &obj){
+        if (this->bits < obj.bits){ 
+            cout << "Error: RHS Big int is larger than LHS";
+        }
+        for (int j = int(obj.binary.size())-1; j >=0 ; j--)
+        {
+            if(this->binary[j] == 0 && obj.binary[j] == 0){
+                this->binary[j] = false;
+            }    
+            else if(this->binary[j] == 1 && obj.binary[j] == 0){
+                this->binary[j] = true;
+            }
+            else if(binary[j] == 1 && obj.binary[j]==1){
+                this->binary[j] = false;
+            }
+            else if(binary[j] == 0 && obj.binary[j]==1){
+                for (int i = j-1; i >=0 ; i--)
+                {
+                    if(this->binary[i] == 1){
+                        this->binary[i] = false;
+                        i++;
+                        while(i!=j){
+                            this->binary[i] = true;
+                            i++;
+                        }
+                        break;
+                    }
+                }
+                this->binary[j] = true;
+            }
+        }
+        return *this;
+    }
+
+    template <int U>
+    myuint operator = (const myuint<U> &obj){
+        if (this->bits < obj.bits){ 
+            cout << "Error: RHS Big int is larger than LHS";
+        }
+        for (int j = int(obj.binary.size())-1; j >=0 ; j--)
+        {
+            this->binary[j] = obj.binary[j];
+        }
+        return *this;
     }
 };
  
@@ -148,14 +196,16 @@ class myuint{
 int main(){
     //17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591
     // myuint<334> i("17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591");
-    myuint<4> a(5);
-    myuint<4> b(9);
+    myuint<4> a(8);
+    myuint<4> b(1);
+    myuint<4> c(0);
+
     a.printBinary();
     cout << "\n";
     b.printBinary();
     cout << "\n";
-    a + b;
-    a.printBinary();
+    c = a - b - b;
+    c.printBinary();
 
     cout << "\n";
 }
