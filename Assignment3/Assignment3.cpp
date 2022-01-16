@@ -7,6 +7,103 @@
 #include <sstream>
 #include <typeinfo>
 using namespace std;
+std::vector<bool> operator + (std::vector<bool> &lhs,const std::vector<bool> &rhs){
+        if (lhs.size() < rhs.size()){ 
+            cout << "Error: RHS Big int is larger than LHS";
+        }
+ 
+        bool carry = false;
+        
+        for (int j = int(rhs.size())-1; j >=0 ; j--)
+        {
+            if(lhs[j] == 0 && rhs[j] == 0 && carry ==1){
+               lhs[j] = true;
+                carry = false;
+            }
+            else if(lhs[j] == 0 && rhs[j] == 0){
+                lhs[j] = false;
+            }         
+            else if((lhs[j] == 1 && rhs[j] == 0) || (lhs[j] == 0 && rhs[j] == 1)){
+                lhs[j] = true;
+            }
+            else if((lhs[j] == 1 && rhs[j] == 1 && carry == 1)){
+                lhs[j] = true;
+                carry = 1;
+            }
+            else if(lhs[j] == 1 && rhs[j]==1){
+                lhs[j] = false;
+                carry = 1;
+            }
+            
+        }
+        return lhs;
+    }
+
+    std::vector<bool> operator - (std::vector<bool> &lhs,const std::vector<bool> &rhs){
+        if (lhs.size() < rhs.size()){ 
+            cout << "Error: RHS Big int is larger than LHS";
+        }
+        for (int j = int(rhs.size())-1; j >=0 ; j--)
+        {
+            if(lhs[j] == 0 && rhs[j] == 0){
+                lhs[j] = false;
+            }    
+            else if(lhs[j] == 1 && rhs[j] == 0){
+                lhs[j] = true;
+            }
+            else if(lhs[j] == 1 && rhs[j]==1){
+                lhs[j] = false;
+            }
+            else if(lhs[j] == 0 && rhs[j]==1){
+                for (int i = j-1; i >=0 ; i--)
+                {
+                    if(lhs[i] == 1){
+                        lhs[i] = false;
+                        i++;
+                        while(i!=j){
+                            lhs[i] = true;
+                            i++;
+                        }
+                        break;
+                    }
+                }
+                lhs[j] = true;
+            }
+        }
+        return lhs;
+    }
+bool operator == (std::vector<bool> &lhs,const std::vector<bool> &rhs){
+    if (lhs.size()>rhs.size()){
+        int diff = lhs.size() - rhs.size();
+        for (int j = int(rhs.size())-1; j >=0 ; j--){
+            if ((rhs[j] == 1 && lhs[j+diff] == 0) || (rhs[j] == 0 && lhs[j+diff] == 1)){
+                return false;
+            }              
+        }
+        for (int i = diff - 1; i >= 0 ; i--){
+            if (lhs[i] == 1){
+                return false;
+            }
+        }
+    }
+    else{
+        int diff =  rhs.size() - lhs.size();
+        for (int j = int(lhs.size())-1; j >=0 ; j--)
+        {
+            if ((rhs[j+diff] == 1 && lhs[j] == 0) || (rhs[j+diff] == 0 && lhs[j] == 1)){
+                return false;
+            }              
+        }
+        for (int i = diff - 1; i >= 0 ; i--){
+            if (rhs[i] == 1){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
 
 template<int T>
 class myuint{
@@ -108,6 +205,7 @@ class myuint{
         return *this;
         
     }
+     
     template <int U>
     myuint operator + (const myuint<U> &obj){
         if (this->bits < obj.bits){ 
@@ -132,7 +230,7 @@ class myuint{
                 this->binary[j] = true;
                 carry = 1;
             }
-            else if(binary[j] == 1 && obj.binary[j]==1){
+            else if(this->binary[j] == 1 && obj.binary[j]==1){
                 this->binary[j] = false;
                 carry = 1;
             }
@@ -189,6 +287,81 @@ class myuint{
         }
         return *this;
     }
+
+    template <int U>
+    myuint operator * (const myuint<U> &obj){
+        vector<bool> hold = this->binary;
+        vector<bool> ans = this->binary;
+        for (int j = int(this->binary.size())-1; j >=0 ; j--)
+        {
+            ans[j] = false;
+        }
+        for (int j = int(obj.binary.size())-1; j >=0 ; j--)
+        {
+            if (obj.binary[j] == 1){
+                ans = ans+hold;
+            }
+            hold.erase(hold.begin());
+            hold.push_back(false);
+        }
+        this->binary=ans;
+        return *this;
+    }
+
+    template <int U>
+    bool operator == (const myuint<U> &obj){
+        vector<bool> lhs = this->binary;
+        vector<bool> rhs = obj.binary;
+        if (this->bits>obj.bits){
+            int diff = this->bits - obj.bits;
+            for (int j = int(obj.binary.size())-1; j >=0 ; j--){
+                if ((obj.binary[j] == 1 && this->binary[j+diff] == 0) || (obj.binary[j] == 0 && this->binary[j+diff] == 1)){
+                    return false;
+                }              
+            }
+            for (int i = diff - 1; i >= 0 ; i--){
+                if (this->binary[i] == 1){
+                    return false;
+                }
+            }
+        }
+        else{
+            int diff =  obj.bits - this->bits;
+            for (int j = int(this->binary.size())-1; j >=0 ; j--)
+            {
+                if ((obj.binary[j+diff] == 1 && this->binary[j] == 0) || (obj.binary[j+diff] == 0 && this->binary[j] == 1)){
+                    return false;
+                }              
+            }
+            for (int i = diff - 1; i >= 0 ; i--){
+                if (obj.binary[i] == 1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    template <int U>
+    myuint operator / (const myuint<U> &obj){
+        vector<bool> hold = this->binary;
+        vector<bool> ans = this->binary;
+        vector<bool> increment;
+        increment.push_back(true);
+        for (int j = int(this->binary.size())-1; j >=0 ; j--)
+        {
+            ans[j] = false;
+        }
+        for(;;){
+            hold - obj.binary;
+            ans = ans + increment;
+            if (hold == obj.binary){
+                ans = ans + increment;
+                break;
+            }
+        }
+        this->binary=ans;
+        return *this;
+    }
     // template <class L>
     // void template_convert_to(){
     // }
@@ -213,15 +386,15 @@ class myuint{
 int main(){
     //17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591
     // myuint<334> i("17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591");
-    myuint<4> a(8);
-    myuint<4> b(1);
-    myuint<4> c(0);
+    myuint<7> a(21);
+    myuint<4> b(7);
+    myuint<5> c(0);
 
     a.printBinary();
     cout << "\n";
     b.printBinary();
     cout << "\n";
-    c = a - b - b;
+    c = a - b;
     c.printBinary();
     int ans = c.template_convert_to();
     cout << "\n";
