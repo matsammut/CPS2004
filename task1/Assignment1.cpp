@@ -302,20 +302,18 @@ class DAG{
 };
 
 int main(){
-    DAG<string> glist;
-    list<string> my_list = { "friends", "are", "very", "cool" };
-    glist.addNode("friends");
-    glist.addNode("are");
-    glist.addNode("very");
-    glist.addNode("cool");
-    glist.addNode("hello");
-    glist.addNode("goodbye");
-    glist.addNode("bet");
-    glist.passListEdges(my_list,"hello");
-    glist.addEdge("bet","goodbye");
-    glist.addEdge("hello","goodbye");
-    glist.printEdges();
-    glist.removeNode("bet");
+    DAG<char> glist;
+    // list<string> my_list = { "friends", "are", "very", "cool" };
+    glist.addNode('a');
+    glist.addNode('b');
+    glist.addNode('c');
+    glist.addNode('d');;
+    glist.addEdge('b','a');
+    glist.addEdge('c','b');
+    glist.addEdge('d','c');
+    glist.addEdge('b','d');
+    // glist.printEdges();
+    glist.removeNode('b');
     glist.printNodes();
     glist.printEdges();
     

@@ -15,26 +15,48 @@ std::vector<bool> operator + (std::vector<bool> &lhs,const std::vector<bool> &rh
         }
  
         bool carry = false;
-        
+        int diff = lhs.size() - rhs.size();
         for (int j = int(rhs.size())-1; j >=0 ; j--)
         {
-            if(lhs[j] == 0 && rhs[j] == 0 && carry ==1){
-               lhs[j] = true;
+            
+            if(lhs[j+diff] == 0 && rhs[j] == 0 && carry ==1){
+               lhs[j+diff] = true;
                 carry = false;
             }
-            else if(lhs[j] == 0 && rhs[j] == 0){
-                lhs[j] = false;
+            else if(lhs[j+diff] == 0 && rhs[j] == 0){
+                lhs[j+diff] = false;
             }         
-            else if((lhs[j] == 1 && rhs[j] == 0) || (lhs[j] == 0 && rhs[j] == 1)){
-                lhs[j] = true;
+            else if((lhs[j+diff] == 1 && rhs[j] == 0 && carry == 1) || (lhs[j+diff] == 0 && rhs[j] == 1 && carry == 1)){
+                lhs[j+diff] = false;
+                carry = true;
+            } 
+            else if((lhs[j+diff] == 1 && rhs[j] == 0) || (lhs[j+diff] == 0 && rhs[j] == 1)){
+                lhs[j+diff] = true;
             }
-            else if((lhs[j] == 1 && rhs[j] == 1 && carry == 1)){
-                lhs[j] = true;
+            else if((lhs[j+diff] == 1 && rhs[j] == 1 && carry == 1)){
+                lhs[j+diff] = true;
                 carry = 1;
             }
-            else if(lhs[j] == 1 && rhs[j]==1){
-                lhs[j] = false;
+            else if(lhs[j+diff] == 1 && rhs[j]==1){
+                lhs[j+diff] = false;
                 carry = 1;
+            }
+            if (j==0 && carry==1){
+                diff --;
+                while (diff >= 0){
+                    if(lhs[diff] == 1 && carry == 1){
+                        lhs[diff] = 0;
+                    }
+                    else if(lhs[diff] == 0 && carry == 1){
+                        carry = 0;
+                        lhs[diff] = 1;
+                    }
+                    if (carry == 0){
+                        break;
+                    }
+                    diff --;
+                }
+                
             }
             
         }
@@ -332,7 +354,11 @@ class myuint{
             // 0 + 0 = 0
             else if(this->binary[j+diff] == 0 && obj.binary[j] == 0){
                 this->binary[j+diff] = false;
-            }    
+            }  
+            else if((this->binary[j+diff] == 1 && obj.binary[j] == 0 && carry == 1) || (this->binary[j+diff] == 0 && obj.binary[j] == 1 && carry == 1)){
+                this->binary[j+diff] = false;
+                carry = true;
+            }  
             // if one of them is true then it is set to true     
             else if((this->binary[j+diff] == 1 && obj.binary[j] == 0) || (this->binary[j+diff] == 0 && obj.binary[j] == 1)){
                 this->binary[j+diff] = true;
@@ -344,9 +370,27 @@ class myuint{
                 carry = 1;
             }
             // if both are 1s but the carry isn't then it's 0 carry 1
-            else if(this->binary[j+diff] == 1 && obj.binary[j]==1){
+            else if(this->binary[j+diff] == 1 && obj.binary[j]==1 && carry == 0){
                 this->binary[j+diff] = false;
                 carry = 1;
+            }
+            // if there is still something still in the carry if statement ensures it is emptied if possible
+            if (j==0 && carry==1){
+                diff --;
+                while (diff >= 0){
+                    if(this->binary[diff] == 1 && carry == 1){
+                        this->binary[diff] = 0;
+                    }
+                    else if(this->binary[diff] == 0 && carry == 1){
+                        carry = 0;
+                        this->binary[diff] = 1;
+                    }
+                    if (carry == 0){
+                        break;
+                    }
+                    diff --;
+                }
+                
             }
             
         }
@@ -580,6 +624,15 @@ class myuint{
                 break;
             }
         }
+        // if the remainder is = to the rhs then the remainder is 0
+        vector<bool> empty;
+        empty.push_back(false);
+        if (hold == obj.binary){
+            for (int j = int(this->binary.size())-1; j >=0 ; j--)
+            {
+                hold[j] = false;
+            }
+        }
         this->binary=hold;
         return *this;
     }
@@ -637,16 +690,14 @@ int main(){
     //17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591
     // myuint<334> i("17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591");
     myuint<8> a(21);
-    myuint<4> b(8);
+    myuint<4> b(3);
     myuint<16> c(0);
 
     a.printBinary();
-    cout << "\n";
     b.printBinary();
-    cout << "\n";
-    c = a - 8;
+    c = a % b;
     c.printBinary();
     int ans = c.template_convert_to();
-    cout << "\n";
+
     cout << ans <<"\n";
 }
